@@ -850,6 +850,7 @@ and pp_caml_opts =
 and pp_rdx_opts = (* ro *)
     { ppr_default_language : string;
       ppr_metavars : string list ref }
+and pp_json_opts = unit
 
 type pp_lex_opts = unit (* lo *)
 type pp_menhir_opts = 
@@ -873,6 +874,7 @@ type pp_mode =  (* m *)
   | Caml of pp_caml_opts
   | Lex  of pp_menhir_opts (* NB: same as pp_menhir_opts *)
   | Menhir of pp_menhir_opts
+  | Json of pp_json_opts
       
 let pp_ascii_opts_default =
   Ascii { ppa_colour = true;

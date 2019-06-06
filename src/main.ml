@@ -64,6 +64,9 @@ let twf_filter_filename_dsts = ref ([] :  string list)
 let caml_filter_filenames = ref ([] : (string * string) list)
 let caml_filter_filename_srcs = ref ([] : string list)
 let caml_filter_filename_dsts = ref ([] :  string list)
+let json_filter_filenames = ref ([] : (string * string) list)
+let json_filter_filename_srcs = ref ([] : string list)
+let json_filter_filename_dsts = ref ([] :  string list)
 let lift_cons_prefixes = ref false
 let test_parse_list = ref ([] : string list)
 let sort = ref true
@@ -307,6 +310,7 @@ let _ = isa_filter_filenames := List.combine (!isa_filter_filename_srcs) (!isa_f
 let _ = coq_filter_filenames := List.combine (!coq_filter_filename_srcs) (!coq_filter_filename_dsts)
 let _ = twf_filter_filenames := List.combine (!twf_filter_filename_srcs) (!twf_filter_filename_dsts)
 let _ = caml_filter_filenames := List.combine (!caml_filter_filename_srcs) (!caml_filter_filename_dsts)
+let _ = json_filter_filenames := List.combine (!json_filter_filename_srcs) (!json_filter_filename_dsts)
 
 let types_of_extensions =
     [ "ott","ott";
@@ -319,7 +323,8 @@ let types_of_extensions =
       "ml", "ocaml";
       "mll", "lex"; 
       "mly", "menhir";
-      "rkt", "rdx"] 
+      "rkt", "rdx";
+      "json", "json"]
 
 let extension_of_type t = List.assoc t (List.map (function (a,b)->(b,a)) types_of_extensions)
 
@@ -334,7 +339,7 @@ let file_type name =
     _ -> None 
 
 let non_tex_output_types = ["coq"; "isa"; "hol"; "lem"; "twf"; "ocaml"; "rdx"]
-let output_types =  "tex" :: "lex" :: "menhir" :: non_tex_output_types
+let output_types =  "tex" :: "lex" :: "menhir" :: "json" :: non_tex_output_types
 let input_types = "ott" :: output_types
 
 let classify_file_argument arg =
@@ -426,6 +431,7 @@ let m_coq = Coq { coq_expand_lists = !coq_expand_lists;
                   coq_lngen = !coq_lngen;
                   coq_use_filter_fn = !coq_use_filter_fn;
                   coq_names_in_rules = !coq_names_in_rules }
+let m_json = Json ()
 
 let oo =  { ppo_include_terminals = !caml_include_terminals; caml_library = ref ("",[]) } 
 let m_caml = Caml oo 
@@ -773,8 +779,9 @@ let output_stage (sd,lookup,sd_unquotiented,sd_quotiented_unaux) =
           let xd_quotiented_unaux = sd_quotiented_unaux.syntax in
           (Lex_menhir_pp.pp_menhir_syntaxdefn m_menhir sd.sources xd_quotiented xd_unquotiented lookup !generate_aux_rules fi;
            Lex_menhir_pp.pp_pp_syntaxdefn m_menhir sd.sources xd_quotiented xd_unquotiented xd_quotiented_unaux !generate_aux_rules fi )
-
-     | _ -> Auxl.int_error("unknown target "^t))
+      | "json" ->
+        System_pp.pp_systemdefn_core_io m_json sd lookup fi !merge_fragments
+      | _ -> Auxl.int_error("unknown target "^t))
 
 
     output_details;
@@ -829,6 +836,7 @@ let output_stage (sd,lookup,sd_unquotiented,sd_quotiented_unaux) =
   (List.iter (filter m_lem) (!lem_filter_filenames));
   (List.iter (filter m_twf) (!twf_filter_filenames));
   (List.iter (filter m_caml) (!caml_filter_filenames));
+  (List.iter (filter m_json) (!json_filter_filenames));
    
 (*  let xd,rdcs = Grammar_typecheck.check_and_disambiguate targets document in  *)
 
