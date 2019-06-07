@@ -1027,6 +1027,7 @@ and pp_nonterm_with_sie_internal as_type m xd sie (ntr,suff) =
             String.concat "" 
               (apply_hom_spec m xd hs 
                  [Auxl.pp_tex_escape ntr^(pp_suffix_with_sie m xd sie suff)]))
+    | Json _ -> ""
     | Coq _ | Isa _ | Hol _ | Lem _ | Rdx _ | Twf _ | Caml _ | Lex _ | Menhir _ -> 
         let s0 = pp_ntr ^ (pp_suffix_with_sie m xd sie suff) in
         let s1 = 
@@ -1075,7 +1076,7 @@ and pp_metavar_with_sie_internal as_type m xd sie (mvr,suff) =
             String.concat "" 
               (apply_hom_spec m xd hs 
                  [Auxl.pp_tex_escape mvr^(pp_suffix_with_sie m xd sie suff)]))
-
+    | Json _ -> ""
     | Coq _ | Isa _ | Hol _ | Lem _ | Twf _ | Rdx _ | Caml _ | Lex _ | Menhir _ -> 
         let s = pp_mvr ^ (pp_suffix_with_sie m xd sie suff) in
         if as_type then s
@@ -1266,6 +1267,7 @@ and pp_metavardefn m xd mvd =
 				  (function (mvr,homs)->pp_metavarroot m xd mvr)
 				  mvd.mvd_names)) 
       ^ " $ & " ^ pp_com ^ " \\\\"
+  | Json _ -> ""
   | _ ->
       ( match mvd.mvd_phantom with
       | true -> ""
@@ -1314,7 +1316,7 @@ and pp_metavardefn m xd mvd =
 	    ^ " : type = nat.\n"
         | Lex _ -> "" 
         | Menhir _ -> ""
-	| Ascii _ | Tex _ -> raise Auxl.ThisCannotHappen ))
+	      | Ascii _ | Tex _ -> raise Auxl.ThisCannotHappen ))
 
 and pp_metavarrep m xd mvd_rep type_name =
   match m with
@@ -2734,6 +2736,7 @@ and pp_rule m xd r = (* returns a string option *)
                            r.rule_ps)))
 (*            ^"[5.0mm]" *)
 	       ^ "}\n"  ))
+  | Json jo -> Some ("{"^" \"TODO\" "^"}")
   in 
   match result with
   | Some s -> Some (if !Global_option.output_source_locations >= 2 then "\n"^pp_source_location m r.rule_loc  ^ s else s)
@@ -2878,6 +2881,8 @@ and pp_rule_list m xd rs =
              rs)
       ^ (match rs with []-> "" | _ -> pp_tex_AFTERLASTRULE_NAME m)
       ^ "\n"^pp_tex_END_RULES ^ "}\n\n"
+  | Json _ ->
+    "\"grammar\" : ["^String.concat ",\n" (Auxl.option_map (pp_rule m xd) rs)^"]"
   | Lex _ | Menhir _ ->
       String.concat "\n" (Auxl.option_map (pp_rule m xd) rs) 
  
@@ -3008,7 +3013,7 @@ and pp_syntaxdefn m xd =
       ^ String.concat "\n" (List.map (pp_metavardefn m xd) xd.xd_mds) 
       ^ "\n"^pp_tex_END_METAVARS ^"}\n\n"  (*  ^ "\\end{array}\\]\n" *)
       ^ pp_rule_list m xd xd.xd_rs
-  | Lex _ | Menhir _ ->
+  | Lex _ | Menhir _ | Json _ ->
       "<<TODO>>"
 
 

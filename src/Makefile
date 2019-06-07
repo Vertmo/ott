@@ -63,7 +63,7 @@ LIBRARIES	= str $(OCAMLGRAPHDIR)/graph
 
 SOURCES_LEXER_PARSER = grammar_lexer.mll grammar_parser.mly
 
-SOURCES_NON_LEXER_PARSER1 = location.ml types.ml auxl.ml merge.ml global_option.ml
+SOURCES_NON_LEXER_PARSER1 = location.ml types.ml auxl.ml merge.ml global_option.ml michelson_specific.ml
 
 SOURCES_NON_LEXER_PARSER2 = grammar_pp.ml parse_table.ml glr.ml new_term_parser.ml term_parser.ml \
 			    dependency.ml bounds.ml context_pp.ml \

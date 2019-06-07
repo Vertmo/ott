@@ -576,7 +576,7 @@ let collapse m xd (funcs:int_funcs) : int_funcs_collapsed =
   | Coq _ -> coq_collapse m xd funcs
   | Twf _ -> twf_collapse m xd funcs
   | Caml _ -> caml_collapse m xd funcs
-  | Tex _ | Ascii _ -> Auxl.error "internal: collapse of Tex-Ascii\n"
+  | Tex _ | Ascii _ | Json _ -> Auxl.error "internal: collapse of Tex-Ascii\n"
 
 (* *** the printer *)
 

@@ -780,7 +780,7 @@ let output_stage (sd,lookup,sd_unquotiented,sd_quotiented_unaux) =
           (Lex_menhir_pp.pp_menhir_syntaxdefn m_menhir sd.sources xd_quotiented xd_unquotiented lookup !generate_aux_rules fi;
            Lex_menhir_pp.pp_pp_syntaxdefn m_menhir sd.sources xd_quotiented xd_unquotiented xd_quotiented_unaux !generate_aux_rules fi )
       | "json" ->
-        System_pp.pp_systemdefn_core_io m_json sd lookup fi !merge_fragments
+        System_pp.pp_systemdefn_core_json m_json sd lookup fi
       | _ -> Auxl.int_error("unknown target "^t))
 
 
