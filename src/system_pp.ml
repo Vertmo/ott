@@ -633,6 +633,7 @@ let pp_systemdefn_core_json m sd lookup oi =
 
       let structure = List.map (fun (_, st) -> st) sd.structure in
       let instructions = Michelson_specific.get_all_instruction_names sd.syntax structure in
+      let instructions = List.sort compare instructions in
       let typingrules = Michelson_specific.get_all_typingrules sd.relations in
       (* List.iter (fun r -> print_endline r.drule_name) typingrules; *)
       let bigsteprules = Michelson_specific.get_all_bigsteprules sd.relations in
@@ -651,8 +652,8 @@ let pp_systemdefn_core_json m sd lookup oi =
         (String.concat ",\n"
         (List.map (fun (name, typing, semantics) ->
                "{"^
-               (Printf.sprintf "\"name\":\"%s\",\n" name)^
-               (Printf.sprintf "\"typing\":[%s],\n" (String.concat ",\n" (List.map (fun d ->
+               (Printf.sprintf "\"op\":\"%s\",\n" name)^
+               (Printf.sprintf "\"ty\":[%s],\n" (String.concat ",\n" (List.map (fun d ->
                     Printf.sprintf "{\"name\":\"%s\",\n\"premises\":[%s],\n\"conclusion\":\"%s\"}"
                       d.drule_name
                       (String.concat ",\n" (List.map (fun (_, pre) ->
