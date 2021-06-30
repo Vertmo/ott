@@ -417,7 +417,7 @@ let allowable_hom_data =
     ( Hu_prod_tm , (["isa";                      "tex";"lex";  "com"; "prec";"leftassoc";"rightassoc"],"production of the terminals grammar"));
     ( Hu_drule   , ([                                          "com"],"definition rule"));
     ( Hu_defn    , ([                            "tex";        "com";"isasyn";"isaprec";"disambiguate";"lemwcf"],"definition"));
-    ( Hu_defnclass, (["coq-universe"],"defns block"));
+    ( Hu_defnclass, (["coq-universe"; "tex-mathpartir-fraction"],"defns block"));
     ( Hu_fundefn , (["isa";"coq";"hol";"lem";(*"twf";*)"tex";        "com";"order";"isasyn";"isaprec";(*"icht";*)"icho";"ichlo";"ich";"ichl";"ic";"ch";"ih";"coq-struct"],"function definition"));
     ( Hu_fundefnclass, ([(* "isa-proof";*)"hol-proof"],"funs block"));
     ( Hu_subrule,  (["isa-proof"],"subrule definition"));

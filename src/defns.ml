@@ -464,7 +464,8 @@ let pp_processed_semiraw_rule fd (m:pp_mode) (xd:syntaxdefn) (s: string) (psr:pr
   | PSR_Rule dr -> output_string fd s; pp_drule fd m xd dr; true
   | PSR_Defncom _ -> false
 
-let pp_defn fd (m:pp_mode) (xd:syntaxdefn) lookup (defnclass_wrapper:string) (universe:string) (d:defn) =
+let pp_defn fd (m:pp_mode) (xd:syntaxdefn) lookup (defnclass_wrapper:string)
+    ?(mathpartir_fraction) (universe:string) (d:defn) =
   match m with
   | Ascii _ ->
       output_string fd Grammar_pp.pp_DEFN;
@@ -520,6 +521,7 @@ let pp_defn fd (m:pp_mode) (xd:syntaxdefn) lookup (defnclass_wrapper:string) (un
         (Grammar_pp.pp_tex_DEFN_BLOCK_NAME m)
         (Grammar_pp.pp_symterm m xd [] de_empty d.d_form)
         pp_com;
+      Option.iter (Printf.fprintf fd "\\mprset{fraction={%s}}\n") mathpartir_fraction;
       List.iter (function
         | PSR_Rule dr -> 
             Printf.fprintf fd "%s{%s{}"
@@ -541,6 +543,9 @@ let pp_defn fd (m:pp_mode) (xd:syntaxdefn) lookup (defnclass_wrapper:string) (un
             
 let pp_defnclass fd (m:pp_mode) (xd:syntaxdefn) lookup (dc:defnclass) =
   let universe = try Grammar_pp.pp_hom_spec m xd (List.assoc "coq-universe" dc.dc_homs) with Not_found -> "Prop" in
+  let mathpartir_fraction =
+    try Some (Grammar_pp.pp_hom_spec m xd (List.assoc "tex-mathpartir-fraction" dc.dc_homs))
+    with Not_found -> None in
   let isa_type_of_defn (m: pp_mode) (xd: syntaxdefn) (d: defn) : string = 
       (* seems simplest to find the type associated with the production that
          we added to the language for this defn, rather than build a type
@@ -655,7 +660,7 @@ let pp_defnclass fd (m:pp_mode) (xd:syntaxdefn) lookup (dc:defnclass) =
 
   | Tex _ ->
       Printf.fprintf fd "%% defns %s\n" dc.dc_name;
-      List.iter (fun d -> pp_defn fd m xd lookup dc.dc_wrapper universe d) dc.dc_defns;
+      List.iter (fun d -> pp_defn ?mathpartir_fraction fd m xd lookup dc.dc_wrapper universe d) dc.dc_defns;
       Printf.fprintf fd "\n\\newcommand{%s}{\n" (Grammar_pp.tex_defnclass_name m dc.dc_name);
       List.iter (fun d -> output_string fd (Grammar_pp.tex_defn_name m dc.dc_wrapper d.d_name);
                           output_string fd "{}") dc.dc_defns;
