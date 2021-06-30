@@ -553,11 +553,11 @@ let pp_systemdefn_core_tex m sd lookup oi =
             (if xo.ppt_colour then output_string fd "\\usepackage{color}\n")
         | pre_wrap -> Embed_pp.pp_embeds fd m sd.syntax lookup pre_wrap
       end;
-      Printf.fprintf fd ("\\newcommand{%s}[4][]{{\\displaystyle\\frac{\\begin{array}{l}#2\\end{array}}{#3}\\quad%s{#4}}}\n")
-        (Grammar_pp.pp_tex_DRULE_NAME m) (Grammar_pp.pp_tex_DRULE_NAME_NAME m);
-      Printf.fprintf fd ("\\newcommand{%s}[1]{\\[#1\\]}\n") (Grammar_pp.pp_tex_USE_DRULE_NAME m);
+      Printf.fprintf fd ("\\usepackage{mathpartir}\n");
+      Printf.fprintf fd ("\\newcommand{%s}[4][]{\\inferrule*[right=#4]{#2}{#3} \\and}\n") (Grammar_pp.pp_tex_DRULE_NAME m);
+      Printf.fprintf fd ("\\newcommand{%s}[1]{#1}\n") (Grammar_pp.pp_tex_USE_DRULE_NAME m);
       Printf.fprintf fd ("\\newcommand{%s}[1]{ #1 }\n") (Grammar_pp.pp_tex_PREMISE_NAME m );
-      Printf.fprintf fd ("\\newenvironment{%s}[3][]{ \\framebox{\\mbox{#2}} \\quad #3 \\\\[0pt]}{}\n") (Grammar_pp.pp_tex_DEFN_BLOCK_NAME m );
+      Printf.fprintf fd ("\\newenvironment{%s}[3][]{ \\framebox{\\mbox{#2}}\\begin{mathpar}}{\\end{mathpar}}\n") (Grammar_pp.pp_tex_DEFN_BLOCK_NAME m );
       Printf.fprintf fd ("\\newenvironment{%s}[3][]{ \\framebox{\\mbox{#2}} \\quad #3 \\\\[0pt]\\begin{displaymath}\\begin{array}{l}}{\\end{array}\\end{displaymath}}\n")
         (Grammar_pp.pp_tex_FUNDEFN_BLOCK_NAME m );
       Printf.fprintf fd ("\\newcommand{%s}[2]{ #1 \\equiv #2 \\\\}\n") (Grammar_pp.pp_tex_FUNCLAUSE_NAME m);
